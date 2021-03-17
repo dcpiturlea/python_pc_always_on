@@ -45,8 +45,11 @@ if __name__ == "__main__":
 
     # Code to add widgets will go here...
     window.title("Always On PC V1.0")
-    # window.geometry('600x200')
+
+
     window.resizable(False, False)
+
+    window.wm_iconbitmap('iotech_logo.ico')
 
     window.config(bg='white')
 
