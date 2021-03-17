@@ -17,11 +17,21 @@ def btn_click():
         lbl['text'] = 'Stopped'
         btn['bg'] = 'gray'
 
+def close_app():
+    print("Close app")
+    try:
+        p.terminate()
+        print("Process terminated")
+    except:
+        "An error has occured"
+    finally:
+        window.destroy()
+        exit()
 
 def always_on_pc():
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.AppActivate("Command Prompt")
     while True:
-        shell = win32com.client.Dispatch("WScript.Shell")
-        shell.AppActivate("Command Prompt")
         shell.SendKeys("{NUMLOCK}")
         print("Numlock on")
         time.sleep(1)
@@ -50,4 +60,5 @@ if __name__ == "__main__":
     lblLoc.grid(column=1, row=4)
     lblTeam = tkinter.Label(window, text="ioTech.ro", bg='white')
     lblTeam.grid(column=1, row=6)
+    window.protocol("WM_DELETE_WINDOW", close_app)
     window.mainloop()
