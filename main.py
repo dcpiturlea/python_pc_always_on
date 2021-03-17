@@ -3,6 +3,7 @@ import time
 import tkinter
 from multiprocessing import Process
 
+
 def btn_click():
     global p
     if btn['text'] == 'Always ON':
@@ -17,6 +18,7 @@ def btn_click():
         lbl['text'] = 'Stopped'
         btn['bg'] = 'gray'
 
+
 def close_app():
     print("Close app")
     try:
@@ -27,6 +29,7 @@ def close_app():
     finally:
         window.destroy()
         exit()
+
 
 def always_on_pc():
     shell = win32com.client.Dispatch("WScript.Shell")
@@ -46,14 +49,11 @@ if __name__ == "__main__":
     # Code to add widgets will go here...
     window.title("Always On PC V1.0")
 
-
     window.resizable(False, False)
-
     window.wm_iconbitmap('iotech_logo.ico')
-
     window.config(bg='white')
 
-    lbl = tkinter.Label(window, text="Stopped",width=30,bg='white')
+    lbl = tkinter.Label(window, text="Stopped", width=30, bg='white')
     lbl.config(font=('Arial 12 bold'))
     lbl.grid(column=1, row=0)
     lblLoc = tkinter.Label(window, text="", bg='white')
