@@ -11,7 +11,9 @@ import os
 import platform
 from os import path
 
-global time_to_numlock
+global pc_always_on
+global pc_will_be_shutting_down
+global t2_h, t2_m
 
 """
 impachetare: 
@@ -21,23 +23,36 @@ pyinstaller --onefile --windowed --icon="shutdown.ico" --add-data=iotech_logo.ic
 """
 
 
+
 def count_down(hour, minute, time_to_numlock):
-    btn_ao['state'] = DISABLED
     lbl['text'] = 'Status: Stopped'
+    global pc_will_be_shutting_down
+    pc_will_be_shutting_down = True
+    print("count_down")
     if hour < 10:
         lbl_hour['text'] = "0" + str(hour)
+    elif hour == 25:
+        lbl_hour['text'] = ""
     else:
         lbl_hour['text'] = hour
+
     if minute < 10:
         lbl_minute['text'] = "0" + str(minute)
+    elif minute == 60:
+        lbl_minute['text'] = ""
     else:
         lbl_minute['text'] = minute
-    lbl_points['text'] = ':'
+
+    if minute == 60 or hour == 25:
+        lbl_points['text'] = ""
+    else:
+        lbl_points['text'] = ':'
     window.update()
     new_time_to_numlock = time_to_numlock
-    while stopped == False:
+    while stopped == False and t2_m < 60 and t2_h < 25:
         window.update()
         time.sleep(0.05)
+        print("in asteptare ora setata")
         if stopped == False and hour == datetime.datetime.now().hour and minute == datetime.datetime.now().minute:
             # window.after(10, window.destroy)
             #Message(title="Shut Down", message="Your PC will be turned off", master=window).show()
@@ -52,7 +67,6 @@ def count_down(hour, minute, time_to_numlock):
             lbl_points['text'] = "Down"
             window.update()
             time.sleep(5)
-            btn_sd['state'] = DISABLED
             shut_down_console()
             break
         if time_to_numlock == 1 and btn_ao['text'] == "Stop Always ON":
@@ -61,11 +75,10 @@ def count_down(hour, minute, time_to_numlock):
             shell.SendKeys("{NUMLOCK}")
             print("Numlock Of: sd")
             time_to_numlock = new_time_to_numlock
-        if time_to_numlock == 0 :
+        if time_to_numlock <= 0:
             print("time_to_numlock=0")
         else:
             time_to_numlock = time_to_numlock - 1
-
 
 
 def shut_down_console():
@@ -82,8 +95,6 @@ def btn_shut_down():
     stopped = False
     if btn_sd['text'] == 'Shut Down PC':
         btn_sd['state'] = DISABLED
-        btn_ao['state'] = DISABLED
-
         global window2
         window2 = tkinter.Tk()
         window2.title("Always On PC V1.0")
@@ -160,23 +171,21 @@ def btn_shut_down():
         lbl_hour['text'] = ''
         lbl_minute['text'] = ''
         lbl_points['text'] = ''
-        btn_ao['state'] = NORMAL
-        btn_ao['bg'] = 'gray'
-        btn_ao['text'] = 'Always ON'
-
-
-
-
+        global t2_h, t2_m
+        t2_h = 25
+        t2_m = 60
+        if pc_always_on == True:
+            always_on_pc()
 
 
 def set_time_to_power_off():
     btn_sd['text'] = 'Stop Shut Down PC'
     lbl_sd['text'] = 'Status: Running'
     btn_sd['bg'] = 'blue'
-
     now = datetime.datetime.now()
     now_h = now.hour
     now_m = now.minute
+    global t2_h, t2_m
     t2_h = hour_choosen.get()
     t2_m = mins_choosen.get()
     t2_m = int(t2_m)
@@ -195,15 +204,13 @@ def set_time_to_power_off():
         btn_sd['bg'] = 'gray'
         btn_sd['text'] = 'Shut Down PC'
         btn_sd['state'] = NORMAL
-        btn_ao['state'] = NORMAL
     else:
         # btn_sd['state'] = DISABLED
-        btn_ao['state'] = DISABLED
-        btn_ao['bg'] = 'gray'
-        btn_ao['text'] = 'Always ON'
-        close_window_2()
+        btn_sd['state'] = NORMAL
+        window2.destroy()
         try:
-            t2 = threading.Thread(target=count_down(t2_h, t2_m, 700), args=())
+            global t2
+            t2 = threading.Thread(target=count_down(t2_h, t2_m, time_to_numlock), args=())
             t2.run()
         except:
             close_app()
@@ -212,7 +219,7 @@ def set_time_to_power_off():
 
 
 def btn__ao_click():
-    if btn_ao['text'] == 'Always ON' and btn_sd['text'] == "Shut Down PC":
+    if btn_ao['text'] == 'Always ON':
         btn_ao['text'] = 'Stop Always ON'
         lbl['text'] = 'Status: Running'
         btn_ao['bg'] = 'red'
@@ -225,16 +232,23 @@ def btn__ao_click():
         btn_ao['text'] = 'Always ON'
         lbl['text'] = 'Status: Stopped'
         btn_ao['bg'] = 'gray'
-
+        global time_to_numlock
+        time_to_numlock = 0
+        global pc_always_on
+        pc_always_on = False
 
 
 def always_on_pc():
-    shell.AppActivate("Command Prompt")
+    global pc_always_on
+    pc_always_on = True
     global time_to_numlock
-    time_to_numlock = 700
+    time_to_numlock = 800
     print("always on: on")
-    while time_to_numlock <= 700:
-        if time_to_numlock == 700:
+    if pc_will_be_shutting_down == True:
+        count_down(t2_h, t2_m, time_to_numlock)
+    while time_to_numlock <= 800:
+        if time_to_numlock == 800:
+            shell.AppActivate("Command Prompt")
             shell.SendKeys("{NUMLOCK}")
             print("Numlock on")
             shell.SendKeys("{NUMLOCK}")
@@ -243,12 +257,11 @@ def always_on_pc():
         time.sleep(0.05)
         time_to_numlock = time_to_numlock - 1
         if time_to_numlock == 1:
-            time_to_numlock = 700
+            time_to_numlock = 800
 
 
 def close_window_2():
     btn_sd['state'] = NORMAL
-    btn_ao['state'] = NORMAL
     window2.destroy()
 
 
@@ -310,6 +323,8 @@ if __name__ == "__main__":
     shell = win32com.client.Dispatch("WScript.Shell")
     global time_to_numlock
     time_to_numlock = 0
+    global pc_will_be_shutting_down
+    pc_will_be_shutting_down = False
     window.protocol("WM_DELETE_WINDOW", close_app)
 
     window.mainloop()
