@@ -6,7 +6,7 @@ block_cipher = None
 a = Analysis(['main.py'],
              pathex=['E:\\1. PROGRAMARE\\6. Python\\python_pc_always_on'],
              binaries=[],
-             datas=[],
+             datas=[('iotech_logo.ico', 'icon')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False )
+          console=False , icon='shutdown.ico')

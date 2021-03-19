@@ -9,11 +9,13 @@ from tkinter import ttk
 from tkinter import DISABLED, NORMAL
 import os
 import platform
+from os import path
 
 """
 impachetare: 
 pyinstaller --onefile --noconsole main.py
 pyinstaller --noconsole iotech_logo.ico main.py
+pyinstaller --onefile --windowed --icon="shutdown.ico" --add-data=iotech_logo.ico;icon  --noconsole main.py
 """
 
 
@@ -81,7 +83,7 @@ def btn_shut_down():
         window2 = tkinter.Tk()
         window2.title("Always On PC V1.0")
         window2.resizable(True, True)
-        window2.wm_iconbitmap('iotech_logo.ico')
+        window2.wm_iconbitmap(path.abspath(path.join(path.dirname(__file__), 'iotech_logo.ico')))
         window2.config(bg='white')
 
         lbl2 = tkinter.Label(window2, text="Hour:", width=15, bg='white')
@@ -251,7 +253,7 @@ if __name__ == "__main__":
     window.title("Always On PC V1.0")
 
     window.resizable(False, False)
-    window.wm_iconbitmap('iotech_logo.ico')
+    window.wm_iconbitmap(path.abspath(path.join(path.dirname(__file__), 'iotech_logo.ico')))
     window.config(bg='white')
 
     lbl = tkinter.Label(window, text="Status: Stopped", width=30, bg='white')
