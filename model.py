@@ -1,6 +1,5 @@
 import datetime
 
-
 def get_hours_left():
     now = datetime.datetime.now()
     hours_dict = []
@@ -26,7 +25,3 @@ def get_total_min_to_shut_down(now_h, now_m, t2_h, t2_m):
         total_mins = total_hours * 60 + (t2_m - now_m)
     return total_mins
 
-
-
-
-print(str(get_total_min_to_shut_down(12, 0, 12, 0)))
