@@ -3,7 +3,7 @@ import datetime
 def get_hours_left():
     now = datetime.datetime.now()
     hours_dict = []
-    for i in range(1, 25):
+    for i in range(0, 24):
         hours_dict.append(i)
     return hours_dict
 

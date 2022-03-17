@@ -114,7 +114,10 @@ def btn_shut_down():
         global hour_choosen
         hour_choosen = ttk.Combobox(window2, width=10, textvariable=n)
         hour_choosen['values'] = left_hours
-        hour_choosen.current(now_h -1)
+        if now_h ==0:
+            hour_choosen.current(now_h)
+        else:
+            hour_choosen.current(now_h -1)
         hour_choosen.grid(column=0, row=1)
 
         lbl4 = tkinter.Label(window2, text="", width=5, bg='white')
@@ -326,5 +329,7 @@ if __name__ == "__main__":
     global pc_will_be_shutting_down
     pc_will_be_shutting_down = False
     window.protocol("WM_DELETE_WINDOW", close_app)
+    global pc_always_on
+    pc_always_on = False
 
     window.mainloop()
